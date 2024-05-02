@@ -4,27 +4,34 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const Task = () => {
-  const handleDownload = () => {
+  const handleDownload = async () => {
+    const apiurl = "http://45.147.176.236:5000/tasks/download";
     try {
-      axios
-        .post(
-          "http://45.147.176.236:5000/tasks/download?offset=0&limit=1000&order=ASC&condition=%D0%9F%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D1%8F%D0%B5%D1%82%D1%81%D1%8F",
-          {
-            responseType: "blob",
-          }
-        )
-        .then((response) => {
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "Report.xlsx";
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          URL.revokeObjectURL(url);
-        });
+      const response = await axios.post(
+        apiurl,
+        {},
+        {
+          responseType: "blob",
+        }
+      );
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "Report.xlsx");
+      document.body.appendChild(link);
+      link.click();
     } catch (e) {
-      console.log(e);
+      console.error("Error download file: ", e);
+    }
+  };
+
+  const clearUploadedFiles = async () => {
+    const apiurl = "http://45.147.176.236:5000/tasks/clear";
+    try {
+      await axios.delete(apiurl);
+      console.log("All file cleared successfully!");
+    } catch (e) {
+      console.error("Error to clearing files", e);
     }
   };
 
@@ -40,9 +47,12 @@ const Task = () => {
         >
           Скачать
         </button>
-        <Link to="/dashboard/task" className="btn btn-danger btn-lg me-3">
+        <button
+          className="btn btn-danger btn-lg me-3"
+          onClick={clearUploadedFiles}
+        >
           Удалить
-        </Link>
+        </button>
       </div>
       <hr />
     </div>
