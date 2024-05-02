@@ -15,7 +15,7 @@ const AddTask = () => {
 
   const handleUpload = () => {
     if (!file) {
-      setMsg("No file selected");
+      setMsg("Файл не выбран");
       return;
     }
     try {

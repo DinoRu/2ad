@@ -1,9 +1,12 @@
 // import axios from "axios";
 import axios from "axios";
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const Task = () => {
+  const navigate = useNavigate();
+  const [deleting, setDeleting] = useState(false);
+
   const handleDownload = async () => {
     const apiurl = "http://45.147.176.236:5000/tasks/download";
     try {
@@ -26,12 +29,18 @@ const Task = () => {
   };
 
   const clearUploadedFiles = async () => {
+    setDeleting(true);
     const apiurl = "http://45.147.176.236:5000/tasks/clear";
     try {
-      await axios.delete(apiurl);
-      console.log("All file cleared successfully!");
+      const response = await axios.delete(apiurl);
+      if (response.status === 200) {
+        alert("Файл успешно удален");
+        navigate("/");
+      }
     } catch (e) {
       console.error("Error to clearing files", e);
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -55,6 +64,7 @@ const Task = () => {
         </button>
       </div>
       <hr />
+      {deleting && <div className="alert alert-info mt-3">Удаляется.....</div>}
     </div>
   );
 };
