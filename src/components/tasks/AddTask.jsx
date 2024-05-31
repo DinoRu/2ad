@@ -1,12 +1,11 @@
-import axios from "axios";
 import React, { useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const AddTask = () => {
+const AddTask = ({ closeModal }) => {
   const [file, setFile] = useState(null);
   const [progress, setProgress] = useState({ started: false, pc: 0 });
   const [msg, setMsg] = useState(null);
-
   const navigate = useNavigate();
 
   const handleFileChange = (event) => {
@@ -28,13 +27,16 @@ const AddTask = () => {
       });
       //Send to server
       axios
-        .post("http://45.147.176.236:5000/tasks/upload", formData, {
+        .post("http://45.84.226.183:5000/tasks/upload", formData, {
           headers: {
             "Custom-Header": "value",
           },
           onUploadProgress: (progressEvent) => {
             setProgress((prevState) => {
-              return { ...prevState, pc: progressEvent.progress * 100 };
+              return {
+                ...prevState,
+                pc: (progressEvent.loaded / progressEvent.total) * 100,
+              };
             });
           },
         })
@@ -47,7 +49,10 @@ const AddTask = () => {
           console.error(e);
         });
 
+      closeModal();
       navigate("/");
+      alert("Файл успешно загружен");
+      // Fermer le modal après le téléchargement
     } catch (e) {
       console.error(e);
     }
