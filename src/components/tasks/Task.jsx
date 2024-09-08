@@ -4,14 +4,15 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Modal from "react-modal";
 import AddTask from "./AddTask";
+import config from "../../config/config";
 
 const Task = () => {
   const navigate = useNavigate();
   const [deleting, setDeleting] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-
+  const apiBaseUrl = config.apiBaseUrl;
   const handleDownload = async () => {
-    const apiurl = "http://45.84.226.183:5000/tasks/download";
+    const apiurl = `${apiBaseUrl}/meters/download`;
     try {
       const response = await axios.post(
         apiurl,
@@ -23,7 +24,7 @@ const Task = () => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", "Report.xlsx");
+      link.setAttribute("download", "Meters.xlsx");
       document.body.appendChild(link);
       link.click();
     } catch (e) {
@@ -33,12 +34,15 @@ const Task = () => {
 
   const clearUploadedFiles = async () => {
     setDeleting(true);
-    const apiurl = "http://45.84.226.183:5000/tasks/clear";
+    const apiurl = `${apiBaseUrl}/meters/delete`;
     try {
       const response = await axios.delete(apiurl);
       if (response.status === 200) {
         alert("Файл успешно удален");
         navigate("/");
+        console.log("Файл успешно удален");
+      } else {
+        console.log("Не успешно");
       }
     } catch (e) {
       console.error("Error to clearing files", e);

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import config from "../../config/config";
 
 const AddTask = ({ closeModal }) => {
   const [file, setFile] = useState(null);
@@ -8,11 +9,13 @@ const AddTask = ({ closeModal }) => {
   const [msg, setMsg] = useState(null);
   const navigate = useNavigate();
 
+  const apiBaseUrl = config.apiBaseUrl;
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
   };
 
   const handleUpload = () => {
+    const apiurl = `${apiBaseUrl}/meters/upload`;
     if (!file) {
       setMsg("Файл не выбран");
       return;
@@ -27,7 +30,7 @@ const AddTask = ({ closeModal }) => {
       });
       //Send to server
       axios
-        .post("http://45.84.226.183:5000/tasks/upload", formData, {
+        .post(apiurl, formData, {
           headers: {
             "Custom-Header": "value",
           },

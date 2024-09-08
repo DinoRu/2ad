@@ -1,6 +1,6 @@
+import "bootstrap-icons/font/bootstrap-icons.css";
 import React from "react";
 import { Outlet } from "react-router-dom";
-import "bootstrap-icons/font/bootstrap-icons.css";
 
 const Dashboard = () => {
   return (
